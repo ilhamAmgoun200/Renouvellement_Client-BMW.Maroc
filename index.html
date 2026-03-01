@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BMW | Votre Prochain Niveau · X1 → Excellence</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@100;300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root {
+  --bmw-blue: #0066B1;
+  --bmw-blue-light: #1a7cc7;
+  --gold: #c9a84c;
+  --bg-dark: #050505;
+  --text-dim: rgba(255,255,255,0.45);
+  --border: rgba(255,255,255,0.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg-dark); color: #fff; font-family: 'Montserrat', sans-serif; overflow-x: hidden; cursor: none; }
+
+/* CURSOR */
+.cursor { position: fixed; width: 12px; height: 12px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 99999; mix-blend-mode: difference; }
+.cursor-ring { position: fixed; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.4); border-radius: 50%; pointer-events: none; z-index: 99998; transition: transform 0.4s cubic-bezier(0.23,1,0.32,1); mix-blend-mode: difference; }
+
+/* HEADER */
+.header { position: fixed; top: 0; left: 0; width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 24px 60px; z-index: 1000; background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%); }
+.logo-bmw { width: 80px; filter: drop-shadow(0 0 20px rgba(0,102,177,0.3)); }
+.header-badge { font-size: 0.55rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(201,168,76,0.3); padding: 8px 18px; }
+
+/* HERO */
+.hero { position: relative; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.hero-video-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(5,5,5,0.9) 0%, rgba(5,5,5,0.3) 50%, rgba(5,5,5,0.7) 100%), url('photo-1555215695-3004980ad54e.jpg') center/cover no-repeat; z-index: 0; }
+.hero-content { position: relative; z-index: 10; max-width: 1200px; width: 100%; padding: 0 60px; }
+.hero-eyebrow { font-size: 0.6rem; letter-spacing: 8px; text-transform: uppercase; color: var(--bmw-blue); margin-bottom: 30px; opacity: 0; animation: fadeUp 1s 0.5s forwards; }
+.hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(3.5rem, 9vw, 8rem); font-weight: 300; line-height: 0.9; margin-bottom: 40px; opacity: 0; animation: fadeUp 1s 0.8s forwards; }
+.hero-title em { font-style: italic; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.4); display: block; }
+.hero-sub { font-size: 0.75rem; letter-spacing: 3px; color: var(--text-dim); max-width: 400px; line-height: 2; opacity: 0; animation: fadeUp 1s 1.1s forwards; }
+.hero-line { position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; animation: fadeUp 1s 1.5s forwards; }
+.hero-line span { font-size: 0.5rem; letter-spacing: 4px; color: var(--text-dim); }
+.scroll-line { width: 1px; height: 60px; background: linear-gradient(180deg, #fff, transparent); animation: scrollPulse 2s infinite; }
+@keyframes scrollPulse { 0%,100%{opacity:0.3;} 50%{opacity:1;} }
+
+/* TRANSITION SECTION */
+.transition-section { padding: 140px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1200px; margin: 0 auto; align-items: center; }
+.transition-label { font-size: 0.55rem; letter-spacing: 6px; text-transform: uppercase; color: var(--gold); margin-bottom: 30px; }
+.transition-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 300; line-height: 1.1; margin-bottom: 30px; }
+.transition-text { font-size: 0.75rem; line-height: 2.2; color: var(--text-dim); }
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.stat-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 40px 30px; position: relative; overflow: hidden; transition: all 0.4s; }
+.stat-box::before { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--bmw-blue); transform: scaleX(0); transform-origin: left; transition: transform 0.4s; }
+.stat-box:hover::before { transform: scaleX(1); }
+.stat-box:hover { background: rgba(0,102,177,0.05); }
+.stat-number { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 300; color: #fff; line-height: 1; }
+.stat-unit { font-size: 1.2rem; color: var(--bmw-blue); }
+.stat-label { font-size: 0.55rem; letter-spacing: 3px; color: var(--text-dim); margin-top: 10px; text-transform: uppercase; }
+
+/* MODELS CARDS SECTION */
+.models-section {
+  padding: 100px 40px;
+  background: #050608;
+}
+.models-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.section-number {
+  font-size: 0.65rem;
+  letter-spacing: 5px;
+  color: var(--gold);
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+.models-header h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 300;
+  margin-bottom: 0;
+}
+/* Paragraph under heading */
+.models-header-sub {
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.35);
+  margin: 18px auto 55px;
+  line-height: 2;
+  max-width: 520px;
+  text-align: center;
+}
+
+/* CARDS GRID */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 260px);
+  justify-content: center;
+  gap: 30px;
+  max-width: 1300px;
+  margin: auto;
+}
+
+/* CARD BASE */
+.model-card {
+  position: relative;
+  width: 260px;
+  aspect-ratio: 9/13;
+  overflow: hidden;
+  border-radius: 16px;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+.model-card:hover {
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+}
+
+/* BACKGROUND IMAGE */
+.card-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.8s, filter 0.8s;
+  filter: brightness(0.7);
+  border-radius: 16px;
+}
+.card-1 .card-bg { background-image: url('BMW-X3 .jpg'); }
+.card-2 .card-bg { background-image: url('BMX X2 1.webp'); }
+.card-3 .card-bg { background-image: url('BMW X7.jpg'); }
+.model-card:hover .card-bg { transform: scale(1.07); filter: brightness(0.85); }
+
+/* OVERLAY */
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(5, 6, 8, 0.97), transparent 55%);
+  border-radius: 16px;
+}
+
+/* CARD CONTENT */
+.card-content {
+  position: absolute;
+  inset: 0;
+  padding: 35px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* BADGE */
+.card-badge {
+  background: var(--gold);
+  color: #000;
+  font-size: 0.5rem;
+  letter-spacing: 3px;
+  padding: 5px 12px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  display: inline-block;
+  align-self: flex-start;
+}
+.card-badge.featured { background: var(--bmw-blue); color: #fff; }
+
+/* TITLE & SUBTITLE */
+.card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.4rem;
+  font-weight: 300;
+  margin-bottom: 6px;
+}
+.card-sub {
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.card-divider {
+  width: 38px;
+  height: 1.5px;
+  background: var(--gold);
+  margin-bottom: 14px;
+  border-radius: 1px;
+}
+
+/* PRICE ON CARD */
+.card-price {
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.88);
+  font-weight: 400;
+}
+.card-price-sub {
+  font-size: 0.48rem;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 4px;
+}
+
+/* Arrow hint on hover */
+.card-arrow {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  opacity: 0;
+  transition: all 0.3s;
+  border-radius: 4px;
+}
+.model-card:hover .card-arrow { opacity: 1; border-color: var(--bmw-blue); background: rgba(0,102,177,0.25); }
+
+/* MODEL SHOWCASE (les grands panels) */
+.model-showcase-section { padding: 0; }
+.model-showcase { position: relative; margin-bottom: 4px; min-height: 75vh; overflow: hidden; display: flex; align-items: center; }
+.model-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 8s ease-out; z-index: 0; }
+.model-showcase:hover .model-bg { transform: scale(1.06); }
+.model-dark { position: absolute; inset: 0; background: linear-gradient(to right, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0.6) 40%, rgba(5,5,5,0.1) 70%, rgba(5,5,5,0.4) 100%); z-index: 1; }
+.model-dark.right { background: linear-gradient(to left, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0.6) 40%, rgba(5,5,5,0.1) 70%, rgba(5,5,5,0.4) 100%); }
+
+/* NOUVEAU STYLE PRIX - CÔTÉ OPPOSÉ SANS CADRE */
+.panel-price-tag {
+  position: absolute;
+  z-index: 15;
+  text-align: right;
+}
+
+/* Prix côté droit (pour les panels alignés à gauche) */
+.panel-price-tag.right-side {
+  top: 50%;
+  transform: translateY(-50%);
+  right: 80px;
+}
+
+/* Prix côté gauche (pour les panels alignés à droite) */
+.panel-price-tag.left-side {
+  top: 50%;
+  transform: translateY(-50%);
+  left: 80px;
+  text-align: left;
+}
+
+.ppt-label { 
+  font-size: 0.48rem; 
+  letter-spacing: 5px; 
+  text-transform: uppercase; 
+  color: rgba(255,255,255,0.4); 
+  margin-bottom: 12px;
+  font-weight: 300;
+}
+
+.ppt-price { 
+  font-family: 'Cormorant Garamond', serif; 
+  font-size: 4.5rem; 
+  font-weight: 300; 
+  color: #fff; 
+  line-height: 1;
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 30px rgba(0,0,0,0.3);
+}
+
+.ppt-currency { 
+  font-size: 0.7rem; 
+  color: var(--gold); 
+  letter-spacing: 4px;
+  font-weight: 300;
+}
+
+.ppt-divider {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 15px 0;
+}
+
+.panel-price-tag.left-side .ppt-divider {
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+
+.panel-price-tag.right-side .ppt-divider {
+  margin-left: auto;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+
+.model-content { position: relative; z-index: 10; padding: 60px 80px; max-width: 600px; }
+.model-content.right { margin-left: auto; text-align: right; }
+.model-number { font-size: 0.5rem; letter-spacing: 6px; color: var(--bmw-blue); margin-bottom: 20px; }
+.model-name { font-family: 'Cormorant Garamond', serif; font-size: clamp(3rem, 7vw, 5.5rem); font-weight: 300; line-height: 1; margin-bottom: 20px; }
+.model-tagline { font-size: 0.65rem; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 30px; }
+.model-desc { font-size: 0.75rem; line-height: 2; color: rgba(255,255,255,0.6); margin-bottom: 40px; }
+.model-specs { display: flex; gap: 40px; margin-bottom: 40px; }
+.model-content.right .model-specs { justify-content: flex-end; }
+.spec-val { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; }
+.spec-unit { font-size: 0.7rem; color: var(--bmw-blue); }
+.spec-key { font-size: 0.5rem; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-top: 4px; }
+.model-content.right .spec-item { text-align: right; }
+.model-actions { display: flex; flex-direction: column; gap: 12px; }
+.model-content.right .model-actions { align-items: flex-end; }
+.model-cta { display: inline-flex; align-items: center; gap: 15px; font-size: 0.6rem; letter-spacing: 4px; text-transform: uppercase; color: #f8fd61; background: none; border: none; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 8px; cursor: pointer; transition: all 0.3s; }
+.model-cta:hover { color: var(--bmw-blue); border-color: var(--bmw-blue); gap: 25px; }
+.gallery-open-btn { display: inline-flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); padding: 13px 22px; font-family: 'Montserrat', sans-serif; font-size: 0.5rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.7); cursor: pointer; transition: all 0.35s; position: relative; overflow: hidden; }
+.gallery-open-btn::before { content:''; position:absolute; inset:0; background: var(--bmw-blue); transform: scaleX(0); transform-origin: left; transition: transform 0.35s; z-index:0; }
+.gallery-open-btn:hover::before { transform: scaleX(1); }
+.gallery-open-btn:hover { color: #fff; border-color: var(--bmw-blue); }
+.gallery-open-btn span, .gallery-open-btn svg { position: relative; z-index: 1; }
+.dl-btn { display: inline-flex; align-items: center; gap: 12px; background: transparent; border: 1px solid rgba(201,168,76,0.35); padding: 13px 22px; font-family: 'Montserrat', sans-serif; font-size: 0.5rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); cursor: pointer; transition: all 0.35s; position: relative; overflow: hidden; }
+.dl-btn::before { content:''; position:absolute; inset:0; background: rgba(201,168,76,0.1); transform: scaleX(0); transform-origin: left; transition: transform 0.35s; z-index:0; }
+.dl-btn:hover::before { transform: scaleX(1); }
+.dl-btn:hover { border-color: var(--gold); color: #fff; }
+.dl-btn span, .dl-btn svg { position: relative; z-index: 1; }
+.dl-pulse { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; position: relative; z-index: 1; animation: dlPulse 2s infinite; }
+@keyframes dlPulse { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
+.model-badge { position: absolute; right: 80px; top: 50%; transform: translateY(-50%); z-index: 10; text-align: center; opacity: 0; transition: opacity 0.5s; pointer-events: none; }
+.model-showcase:hover .model-badge { opacity: 1; }
+.badge-price { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 300; line-height: 1.2; }
+.badge-label { font-size: 0.5rem; letter-spacing: 4px; color: var(--text-dim); margin-top: 8px; }
+
+/* ============ NOUVELLE SECTION TEXTE ============ */
+.text-interlude {
+  padding: 120px 60px;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.text-interlude-label {
+  font-size: 0.48rem;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 30px;
+  opacity: 0.85;
+}
+
+.text-interlude-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4.5vw, 3.8rem);
+  font-weight: 300;
+  line-height: 1.2;
+  margin-bottom: 35px;
+  color: #fff;
+}
+
+.text-interlude-divider {
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 0 auto 35px;
+}
+
+.text-interlude-content {
+  font-size: 0.78rem;
+  line-height: 2.3;
+  color: rgba(255,255,255,0.55);
+  max-width: 750px;
+  margin: 0 auto;
+  letter-spacing: 0.3px;
+}
+
+/* ============ GALLERY LIGHTBOX ============ */
+.gallery-overlay { position: fixed; inset: 0; z-index: 99990; background: rgba(0,0,0,0.97); display: none; flex-direction: column; }
+.gallery-overlay.open { display: flex; }
+.gallery-header { display: flex; align-items: center; justify-content: space-between; padding: 28px 60px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.gh-left { display: flex; flex-direction: column; gap: 5px; }
+.gh-tag { font-size: 0.45rem; letter-spacing: 6px; color: var(--bmw-blue); text-transform: uppercase; }
+.gh-name { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; }
+.gh-right { display: flex; align-items: center; gap: 20px; }
+.gh-counter { font-size: 0.55rem; letter-spacing: 4px; color: rgba(255,255,255,0.3); }
+.gh-close { width: 48px; height: 48px; border: 1px solid var(--border); background: transparent; color: #fff; font-size: 1.1rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; }
+.gh-close:hover { border-color: #fff; background: rgba(255,255,255,0.05); }
+.gallery-main { flex: 1; position: relative; overflow: hidden; }
+.gm-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.03); transition: opacity 0.5s cubic-bezier(0.23,1,0.32,1), transform 0.7s cubic-bezier(0.23,1,0.32,1); }
+.gm-img.active { opacity: 1; transform: scale(1); }
+.gm-img.exit { opacity: 0; transform: scale(0.97); }
+.gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(5,5,5,0.75); border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(10px); color: #fff; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.4rem; transition: all 0.3s; z-index: 20; }
+.gallery-nav:hover { background: rgba(0,102,177,0.65); border-color: var(--bmw-blue); }
+.gallery-prev { left: 40px; }
+.gallery-next { right: 40px; }
+.gallery-caption { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(0deg, rgba(5,5,5,1) 0%, transparent 100%); padding: 50px 60px 28px; display: flex; align-items: flex-end; justify-content: space-between; z-index: 10; }
+.gc-main { display: flex; flex-direction: column; gap: 5px; }
+.gc-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-style: italic; color: rgba(255,255,255,0.75); }
+.gc-sub { font-size: 0.55rem; letter-spacing: 3px; color: rgba(255,255,255,0.35); }
+.gallery-info-toggle { background: rgba(5,5,5,0.7); border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(10px); color: rgba(255,255,255,0.55); padding: 12px 20px; cursor: pointer; font-size: 0.45rem; letter-spacing: 4px; text-transform: uppercase; transition: all 0.3s; z-index: 20; position: absolute; top: 20px; right: 110px; }
+.gallery-info-toggle:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+.gallery-info-panel { position: absolute; top: 0; right: 0; bottom: 0; width: 330px; background: rgba(5,5,5,0.97); border-left: 1px solid var(--border); backdrop-filter: blur(20px); padding: 40px 35px; transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.23,1,0.32,1); z-index: 15; overflow-y: auto; }
+.gallery-info-panel.open { transform: translateX(0); }
+.gip-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 300; margin-bottom: 4px; }
+.gip-sub { font-size: 0.45rem; letter-spacing: 5px; color: var(--bmw-blue); text-transform: uppercase; margin-bottom: 28px; }
+.gip-feature { display: flex; align-items: flex-start; gap: 15px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+.gf-dot { width: 6px; height: 6px; background: var(--bmw-blue); border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.gf-content h4 { font-size: 0.55rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; color: #fff; }
+.gf-content p { font-size: 0.62rem; line-height: 1.8; color: rgba(255,255,255,0.45); }
+.gip-dl { margin-top: 28px; width: 100%; background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.3); color: var(--gold); padding: 16px; font-family: 'Montserrat', sans-serif; font-size: 0.48rem; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.gip-dl:hover { background: rgba(201,168,76,0.18); border-color: var(--gold); color: #fff; }
+.gallery-strip { flex-shrink: 0; padding: 18px 60px; border-top: 1px solid var(--border); display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
+.gallery-strip::-webkit-scrollbar { display: none; }
+.strip-thumb { width: 95px; height: 62px; flex-shrink: 0; cursor: pointer; border: 2px solid transparent; transition: all 0.3s; overflow: hidden; }
+.strip-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; filter: brightness(0.5) saturate(0.5); transition: all 0.3s; }
+.strip-thumb.active { border-color: var(--bmw-blue); }
+.strip-thumb.active img { filter: brightness(1) saturate(1); }
+.strip-thumb:hover img { filter: brightness(0.8); }
+
+/* Toast */
+.dl-toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--bmw-blue); color: #fff; padding: 16px 32px; font-size: 0.55rem; letter-spacing: 3px; text-transform: uppercase; z-index: 999999; opacity: 0; transition: all 0.4s cubic-bezier(0.23,1,0.32,1); pointer-events: none; white-space: nowrap; }
+.dl-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== VIDEO BLOCK — LUXURY REDESIGN ===== */
+.video-interlude-wrapper { 
+  position: relative;
+  padding: 80px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video-cinema {
+  position: relative;
+  width: 85%;
+  max-width: 1400px;
+  height: 70vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border-radius: 2px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+}
+
+.vc-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(0.6) saturate(1.15) contrast(1.05);
+  transform: scale(1.0);
+  transition: transform 14s ease-out, filter 1.5s ease;
+}
+.video-cinema:hover .vc-video {
+  transform: scale(1.03);
+  filter: brightness(0.7) saturate(1.2) contrast(1.08);
+}
+
+.vc-gradient-bottom {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(to right, rgba(3,5,8,0.92) 0%, rgba(3,5,8,0.4) 45%, transparent 75%),
+    linear-gradient(to top, rgba(3,5,8,0.95) 0%, rgba(3,5,8,0.5) 35%, transparent 65%);
+}
+
+.vc-grain, .vc-letterbox-top, .vc-letterbox-bottom, .vc-scanline { display: none; }
+
+.vc-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 70px 70px;
+  gap: 0;
+}
+
+.vc-left { max-width: 600px; }
+
+.vc-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 25px;
+}
+.vc-eyebrow-line { width: 45px; height: 1px; background: var(--gold); opacity: 0.8; }
+.vc-eyebrow-text {
+  font-size: 0.42rem;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.9;
+}
+
+.vc-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.5rem, 7vw, 6.5rem);
+  font-weight: 300;
+  line-height: 0.92;
+  margin-bottom: 35px;
+  letter-spacing: -1.5px;
+}
+.vc-title strong { display: block; color: #ffffff; font-weight: 300; }
+.vc-title em {
+  display: block;
+  font-style: italic;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.35);
+}
+
+.vc-gold-line {
+  width: 70px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  margin-bottom: 35px;
+}
+
+.vc-scroll-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  transition: all 0.4s;
+  text-decoration: none;
+}
+.vc-scroll-cta:hover .vc-scroll-text span:last-child { color: #fff; letter-spacing: 6px; }
+.vc-scroll-text { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+.vc-scroll-text span:first-child { font-size: 0.4rem; letter-spacing: 5px; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+.vc-scroll-text span:last-child { font-size: 0.56rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.75); transition: all 0.4s; }
+.vc-scroll-icon { width: 44px; height: 44px; border: 1px solid rgba(201,168,76,0.4); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: var(--gold); transition: all 0.4s; animation: bounce 3s ease-in-out infinite; }
+.vc-scroll-cta:hover .vc-scroll-icon { border-color: var(--gold); background: rgba(201,168,76,0.1); }
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.vc-divider, .vc-right, .vc-bottom-bar { display: none; }
+
+.vc-year-watermark {
+  position: absolute;
+  bottom: 30px;
+  right: 55px;
+  z-index: 10;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 5.5rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.04);
+  letter-spacing: -3px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* FORM */
+.form-wrapper { max-width: 1000px; margin: 0 auto; padding: 80px 60px 100px; }
+.form-label { font-size: 0.55rem; letter-spacing: 6px; color: var(--gold); text-align: center; margin-bottom: 20px; display: block; text-transform: uppercase; }
+.form-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem,5vw,4rem); font-weight: 300; text-align: center; margin-bottom: 60px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--border); }
+.form-field { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 30px 35px; transition: background 0.3s; }
+.form-field:hover { background: rgba(255,255,255,0.02); }
+.form-field:nth-child(even) { border-right: none; }
+.form-field.span2 { grid-column: span 2; border-right: none; }
+.form-field label { display: block; font-size: 0.5rem; letter-spacing: 4px; text-transform: uppercase; color: var(--bmw-blue); margin-bottom: 12px; }
+.form-field input, .form-field select { width: 100%; background: transparent; border: none; color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 300; outline: none; }
+.form-field select option { background: #0a0a0a; }
+.form-field input::placeholder { color: rgba(255,255,255,0.2); }
+.form-submit { grid-column: span 2; }
+.submit-btn { width: 100%; background: var(--bmw-blue); color: #fff; border: none; padding: 28px; font-family: 'Montserrat', sans-serif; font-size: 0.6rem; letter-spacing: 6px; text-transform: uppercase; cursor: pointer; transition: all 0.4s; position: relative; overflow: hidden; }
+.submit-btn::before { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.1); transform: translateX(-100%); transition: transform 0.4s; }
+.submit-btn:hover::before { transform: translateX(0); }
+.submit-btn:hover { background: #0052a3; letter-spacing: 8px; }
+
+/* SUCCESS MESSAGE */
+.form-success {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 40px;
+  border: 1px solid var(--border);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.form-success::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--bmw-blue), var(--gold));
+}
+.form-success.visible { display: flex; animation: fadeUp 0.8s forwards; }
+.fs-icon {
+  width: 72px; height: 72px;
+  border: 1px solid rgba(201,168,76,0.4);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem;
+  color: var(--gold);
+  margin-bottom: 30px;
+  position: relative;
+}
+.fs-icon::after { content: ''; position: absolute; inset: -8px; border: 1px solid rgba(201,168,76,0.15); border-radius: 50%; }
+.fs-title { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 300; margin-bottom: 12px; }
+.fs-model { font-size: 0.55rem; letter-spacing: 5px; text-transform: uppercase; color: var(--bmw-blue); margin-bottom: 25px; }
+.fs-text { font-size: 0.75rem; line-height: 2.2; color: rgba(255,255,255,0.45); max-width: 500px; margin-bottom: 40px; }
+.fs-divider { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin-bottom: 30px; }
+.fs-commercial {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  padding: 24px 35px;
+  margin-bottom: 30px;
+}
+.fs-commercial-avatar { width: 52px; height: 52px; background: rgba(0,102,177,0.2); border: 1px solid rgba(0,102,177,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+.fs-commercial-info { text-align: left; }
+.fs-commercial-name { font-size: 0.7rem; letter-spacing: 2px; color: #fff; margin-bottom: 5px; }
+.fs-commercial-role { font-size: 0.45rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+.fs-eta { font-size: 0.5rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.25); display: flex; align-items: center; gap: 12px; }
+.fs-eta::before, .fs-eta::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* VIDEO SECTION — FULL WIDTH */
+.video-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+.video-bg {
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1617469767052-3e50d82cdb60?w=1920&q=80') center/cover no-repeat;
+  filter: brightness(0.55) saturate(1.1);
+  transform: scale(1.04);
+  transition: transform 14s ease-out;
+  z-index: 0;
+}
+.video-section:hover .video-bg { transform: scale(1.0); filter: brightness(0.65) saturate(1.15); }
+.video-gradient {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, rgba(5,5,5,0.85) 0%, rgba(5,5,5,0.2) 50%, transparent 80%),
+    linear-gradient(to top, rgba(5,5,5,0.9) 0%, transparent 50%);
+  z-index: 1;
+}
+.video-content {
+  position: relative;
+  z-index: 10;
+  padding: 0 80px 100px;
+  max-width: 700px;
+}
+.video-eyebrow { display: flex; align-items: center; gap: 18px; margin-bottom: 28px; }
+.video-eyebrow-line { width: 45px; height: 1px; background: var(--gold); }
+.video-eyebrow-text { font-size: 0.42rem; letter-spacing: 9px; text-transform: uppercase; color: var(--gold); opacity: 0.85; }
+.video-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(4rem, 8vw, 7rem);
+  font-weight: 300;
+  line-height: 0.9;
+  margin-bottom: 40px;
+  letter-spacing: -2px;
+}
+.video-title strong { display: block; color: #fff; font-weight: 300; }
+.video-title em { display: block; font-style: italic; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.3); }
+.video-gold-line { width: 70px; height: 1px; background: linear-gradient(90deg, var(--gold), transparent); margin-bottom: 40px; }
+.video-play-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.4s;
+  text-decoration: none;
+}
+.video-play-icon { width: 56px; height: 56px; border: 1px solid rgba(201,168,76,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.4s; }
+.video-play-icon::before { content: ''; width: 0; height: 0; border-style: solid; border-width: 8px 0 8px 14px; border-color: transparent transparent transparent var(--gold); margin-left: 3px; }
+.video-play-btn:hover .video-play-icon { background: rgba(201,168,76,0.15); border-color: var(--gold); transform: scale(1.1); }
+.video-play-text { display: flex; flex-direction: column; gap: 4px; }
+.video-play-text span:first-child { font-size: 0.42rem; letter-spacing: 5px; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+.video-play-text span:last-child { font-size: 0.58rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.7); transition: all 0.4s; }
+.video-play-btn:hover .video-play-text span:last-child { color: #fff; letter-spacing: 6px; }
+.video-watermark { position: absolute; bottom: 40px; right: 70px; z-index: 10; font-family: 'Cormorant Garamond', serif; font-size: 7rem; font-weight: 300; color: rgba(255,255,255,0.04); letter-spacing: -4px; line-height: 1; pointer-events: none; user-select: none; }
+
+/* HERO STAT */
+.hero-stat { position: absolute; right: 8%; top: 50%; transform: translateY(-50%); text-align: left; color: white; z-index: 10; }
+.hero-stat-number { font-size: 110px; font-weight: 200; font-family: 'Cormorant Garamond', serif; letter-spacing: 2px; line-height: 1; background: linear-gradient(180deg,#ffffff,#9aa3ad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-stat-text { margin-top: 15px; font-size: 13px; letter-spacing: 4px; font-weight: 300; opacity: 0.8; }
+.hero-stat-number::after { content: ""; display: block; width: 60px; height: 1px; background: linear-gradient(90deg,transparent,#d4af37,transparent); margin-top: 12px; }
+
+footer { border-top: 1px solid var(--border); padding: 40px 60px; display: flex; align-items: center; justify-content: space-between; }
+footer p { font-size: 0.55rem; letter-spacing: 3px; color: var(--text-dim); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(30px);} to{opacity:1;transform:translateY(0);} }
+.reveal { opacity: 0; transform: translateY(40px); transition: all 0.9s cubic-bezier(0.23,1,0.32,1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 900px) {
+  .header { padding: 20px 24px; }
+  .hero-content { padding: 0 24px; }
+  .hero-stat { display: none; }
+  .model-content { padding: 40px 24px; max-width: 100%; }
+  .model-content.right { text-align: left; }
+  .model-content.right .model-specs { justify-content: flex-start; }
+  .model-content.right .model-actions { align-items: flex-start; }
+  .model-badge { display: none; }
+  .panel-price-tag { 
+    position: static !important;
+    transform: none !important;
+    margin: 30px 24px;
+    text-align: left;
+  }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-field:nth-child(even) { border-right: 1px solid var(--border); }
+  .form-field.span2, .form-submit { grid-column: span 1; }
+  .form-wrapper { padding: 60px 24px 80px; }
+  .gallery-header { padding: 20px 24px; }
+  .gallery-strip { padding: 15px 24px; }
+  .gallery-caption { padding: 30px 24px 20px; }
+  .gallery-prev { left: 15px; }
+  .gallery-next { right: 15px; }
+  .gallery-info-panel { width: 100%; top: auto; left: 0; right: 0; height: 60%; transform: translateY(100%); border-left: none; border-top: 1px solid var(--border); }
+  .gallery-info-panel.open { transform: translateY(0); }
+  footer { flex-direction: column; gap: 20px; text-align: center; padding: 30px 24px; }
+  .cards-grid { grid-template-columns: 1fr; justify-items: center; }
+  .model-card { width: 100%; max-width: 320px; }
+  .video-content { padding: 0 30px 70px; }
+  .video-title { font-size: 3.5rem; }
+  .video-watermark { font-size: 4rem; bottom: 20px; right: 20px; }
+  .text-interlude { padding: 80px 30px; }
+  .video-cinema { width: 95%; height: 50vh; }
+  .vc-content { padding: 0 40px 50px; }
+}
+</style>
+</head>
+<body>
+
+<div class="dl-toast" id="dlToast"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ============ GALLERY OVERLAY ============ -->
+<div class="gallery-overlay" id="galleryOverlay">
+  <div class="gallery-header">
+    <div class="gh-left">
+      <span class="gh-tag">BMW · Galerie Exclusive</span>
+      <div class="gh-name" id="gh-name">BMW X3</div>
+    </div>
+    <div class="gh-right">
+      <span class="gh-counter" id="gh-counter">1 / 6</span>
+      <button class="gh-close" onclick="closeGallery()">✕</button>
+    </div>
+  </div>
+  <div class="gallery-main" id="gallery-main">
+    <button class="gallery-nav gallery-prev" onclick="galleryNav(-1)">‹</button>
+    <div id="gallery-imgs"></div>
+    <button class="gallery-nav gallery-next" onclick="galleryNav(1)">›</button>
+    <div class="gallery-caption">
+      <div class="gc-main">
+        <div class="gc-title" id="gc-title">Silhouette</div>
+        <div class="gc-sub" id="gc-sub">Vue extérieure</div>
+      </div>
+    </div>
+    <button class="gallery-info-toggle" id="infoToggleBtn" onclick="toggleInfo()">Spécifications</button>
+    <div class="gallery-info-panel" id="infoPanel">
+      <div class="gip-title" id="gip-title">BMW X3</div>
+      <div class="gip-sub" id="gip-sub">SAV d'excellence</div>
+      <div id="gip-features"></div>
+      <button class="gip-dl" id="gip-dl-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+        Télécharger la Fiche Technique
+      </button>
+    </div>
+  </div>
+  <div class="gallery-strip" id="gallery-strip"></div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <img src="BMW.svg" class="logo-bmw" alt="BMW">
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-video-overlay"></div>
+  <div class="hero-stat reveal">
+    <span class="hero-stat-number">3+</span>
+    <div class="hero-stat-text">
+      <div>PROPOSITIONS</div>
+      <div>TAILLÉES POUR VOUS</div>
+    </div>
+  </div>
+  <div class="hero-content">
+    <h1 class="hero-title">Élevez<br><em>L'Expérience</em></h1>
+    <p class="hero-sub">Vous avez choisi l'excellence. Il est temps de la redéfinir. Découvrez les modèles conçus pour prolonger votre vision.</p>
+  </div>
+  <div class="hero-line">
+    <span>Défiler</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MODELS CARDS SECTION -->
+<section class="models-section">
+  <div class="models-header reveal">
+    <div class="section-number">VOS PROPOSITIONS</div>
+    <h2>Trois visions.<br>Une seule destination.</h2>
+  </div>
+  <p class="models-header-sub reveal">
+    Sélectionnez le modèle qui correspond à votre ambition.<br>
+    Chaque BMW a été pensée pour redéfinir votre standard d'excellence.
+  </p>
+
+  <div class="cards-grid">
+    <!-- CARD 1 — X3 -->
+    <div class="model-card card-1 reveal" onclick="scrollToModel('x3')">
+      <div class="card-bg"></div>
+      <div class="card-overlay"></div>
+      <div class="card-arrow">→</div>
+      <div class="card-content">
+        <div class="card-badge">Proposition 1</div>
+        <div class="card-title">BMW X3</div>
+        <div class="card-sub">La puissance redéfinie</div>
+      </div>
+    </div>
+
+    <!-- CARD 2 — X2 -->
+    <div class="model-card card-2 reveal" onclick="scrollToModel('x2')">
+      <div class="card-bg"></div>
+      <div class="card-overlay"></div>
+      <div class="card-arrow">→</div>
+      <div class="card-content">
+        <div class="card-badge featured">Proposition 2</div>
+        <div class="card-title">BMW X2</div>
+        <div class="card-sub">Le style avant tout</div>
+      </div>
+    </div>
+
+    <!-- CARD 3 — X7 -->
+    <div class="model-card card-3 reveal" onclick="scrollToModel('x7')">
+      <div class="card-bg"></div>
+      <div class="card-overlay"></div>
+      <div class="card-arrow">→</div>
+      <div class="card-content">
+        <div class="card-badge">Proposition 3</div>
+        <div class="card-title">BMW X7</div>
+        <div class="card-sub">Le summum du luxe</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GRANDS PANELS MODÈLES ============ -->
+
+<!-- X3 -->
+<div id="panel-x3">
+  <div class="model-showcase reveal">
+    <div class="model-bg" style="background-image:url('BMW X3 2.webp');"></div>
+    <div class="model-dark"></div>
+    
+    <!-- Prix repositionné sur le côté DROIT (opposé au contenu) -->
+    <div class="panel-price-tag right-side reveal">
+      <div class="ppt-label">À PARTIR DE</div>
+      <div class="ppt-price">430 000</div>
+      <div class="ppt-divider"></div>
+      <div class="ppt-currency">DH TTC</div>
+    </div>
+
+    <div class="model-content">
+      <p class="model-number">01 · PROPOSITION</p>
+      <h3 class="model-name">BMW X3</h3>
+      <p class="model-tagline">L'Art du Territoire · 30i xDrive M Sport</p>
+      <p class="model-desc">Plus grand, plus puissant, plus raffiné. Le X3 redéfinit ce que signifie commander la route avec une présence qui impose le respect et un intérieur qui vous enveloppe dans le luxe.</p>
+      <div class="model-specs">
+        <div class="spec-item"><div class="spec-val">292<span class="spec-unit"> ch</span></div><div class="spec-key">Puissance</div></div>
+        <div class="spec-item"><div class="spec-val">5.6<span class="spec-unit"> s</span></div><div class="spec-key">0–100 km/h</div></div>
+        <div class="spec-item"><div class="spec-val">xDrive</div><div class="spec-key">4×4 intelligent</div></div>
+      </div>
+      <div class="model-actions">
+        <button class="model-cta" onclick="goToForm('x3')">Je suis intéressé <span style="font-size:1rem;">→</span></button>
+        <button class="gallery-open-btn" onclick="openGallery('x3')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3v18h18V3zm-2 2v14H5V5h14zM8 8H6V6h2v2zm4 0h-2V6h2v2zm4 0h-2V6h2v2zm-8 4H6v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>
+          <span>Galerie · 6 photos</span>
+        </button>
+        <button class="dl-btn" onclick="downloadFiche('x3')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+          <span>Fiche Technique · BMW X3</span>
+          <span class="dl-pulse"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- X2 -->
+<div id="panel-x2">
+  <div class="model-showcase reveal">
+    <div class="model-bg" style="background-image:url('10e5cc73-f9f5-428c-b9dc-1c303f57a9aa.jpg'); background-position:center 30%;"></div>
+    <div class="model-dark right"></div>
+    
+    <!-- Prix repositionné sur le côté GAUCHE (opposé au contenu qui est à droite) -->
+    <div class="panel-price-tag left-side reveal">
+      <div class="ppt-label">À PARTIR DE</div>
+      <div class="ppt-price">380 000</div>
+      <div class="ppt-divider"></div>
+      <div class="ppt-currency">DH TTC</div>
+    </div>
+
+    <div class="model-content right">
+      <p class="model-number">02 · PROPOSITION</p>
+      <h3 class="model-name">BMW X2</h3>
+      <p class="model-tagline">Design Sans Compromis · M35i xDrive</p>
+      <p class="model-desc">Le coupé SUV qui transcende les conventions. Lignes sculpturales, dynamisme exacerbé — une silhouette qui tourne les têtes bien avant que vous n'appuyiez sur l'accélérateur.</p>
+      <div class="model-specs">
+        <div class="spec-item" style="text-align:right;"><div class="spec-val">313<span class="spec-unit"> ch</span></div><div class="spec-key">Puissance</div></div>
+        <div class="spec-item" style="text-align:right;"><div class="spec-val">5.4<span class="spec-unit"> s</span></div><div class="spec-key">0–100 km/h</div></div>
+        <div class="spec-item" style="text-align:right;"><div class="spec-val">Coupé<span class="spec-unit"> SAC</span></div><div class="spec-key">Style unique</div></div>
+      </div>
+      <div class="model-actions">
+        <button class="model-cta" style="justify-content:flex-end;" onclick="goToForm('x2')">Je suis intéressé <span style="font-size:1rem;">→</span></button>
+        <button class="gallery-open-btn" onclick="openGallery('x2')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3v18h18V3zm-2 2v14H5V5h14zM8 8H6V6h2v2zm4 0h-2V6h2v2zm4 0h-2V6h2v2zm-8 4H6v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>
+          <span>Galerie · 6 photos</span>
+        </button>
+        <button class="dl-btn" onclick="downloadFiche('x2')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+          <span>Fiche Technique · BMW X2</span>
+          <span class="dl-pulse"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- X7 -->
+<div id="panel-x7">
+  <div class="model-showcase reveal">
+    <div class="model-bg" style="background-image:url('b47b1b1d-01f6-47d7-8b6f-8123dbe73f98.jpg');"></div>
+    <div class="model-dark"></div>
+    
+    <!-- Prix repositionné sur le côté DROIT (opposé au contenu) -->
+    <div class="panel-price-tag right-side reveal">
+      <div class="ppt-label">À PARTIR DE</div>
+      <div class="ppt-price">1 200 000</div>
+      <div class="ppt-divider"></div>
+      <div class="ppt-currency">DH TTC</div>
+    </div>
+
+    <div class="model-content">
+      <p class="model-number">03 · PROPOSITION</p>
+      <h3 class="model-name">BMW X7</h3>
+      <p class="model-tagline">Le Summum de l'Excellence · xDrive50i V8</p>
+      <p class="model-desc">L'expression ultime du SAV BMW. 7 places de pure grandeur, une présence monumentale et une technologie qui anticipe chacun de vos désirs. Pour ceux qui refusent tout compromis.</p>
+      <div class="model-specs">
+        <div class="spec-item"><div class="spec-val">530<span class="spec-unit"> ch</span></div><div class="spec-key">V8 Biturbo</div></div>
+        <div class="spec-item"><div class="spec-val">4.7<span class="spec-unit"> s</span></div><div class="spec-key">0–100 km/h</div></div>
+        <div class="spec-item"><div class="spec-val">7<span class="spec-unit"> pl.</span></div><div class="spec-key">Confort total</div></div>
+      </div>
+      <div class="model-actions">
+        <button class="model-cta" onclick="goToForm('x7')">Je suis intéressé <span style="font-size:1rem;">→</span></button>
+        <button class="gallery-open-btn" onclick="openGallery('x7')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3v18h18V3zm-2 2v14H5V5h14zM8 8H6V6h2v2zm4 0h-2V6h2v2zm4 0h-2V6h2v2zm-8 4H6v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>
+          <span>Galerie · 6 photos</span>
+        </button>
+        <button class="dl-btn" onclick="downloadFiche('x7')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+          <span>Fiche Technique · BMW X7</span>
+          <span class="dl-pulse"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ NOUVELLE SECTION TEXTE ============ -->
+<section class="text-interlude reveal">
+  <div class="text-interlude-label">L'EXPÉRIENCE BMW · REDÉFINIE</div>
+  <h2 class="text-interlude-title">
+    Un héritage d'excellence.<br>
+    Une vision tournée vers l'avenir.
+  </h2>
+  <div class="text-interlude-divider"></div>
+  <div class="text-interlude-content">
+    Chaque BMW est le fruit d'une quête incessante de perfection. Du design sculptural aux technologies de pointe, 
+    en passant par les performances qui transcendent les attentes — nous ne créons pas simplement des véhicules, 
+    nous façonnons des expériences de conduite qui marquent les esprits. En tant que client privilégié X1, 
+    vous avez déjà goûté à cette excellence. Il est maintenant temps d'explorer ce qui vous attend au-delà.
+  </div>
+</section>
+
+<!-- VIDEO INTERLUDE -->
+<div class="video-interlude-wrapper">
+  <div class="video-cinema reveal">
+    <video class="vc-video" autoplay muted loop playsinline>
+      <source src="88481-606110665_small.mp4" type="video/mp4">
+    </video>
+    <div class="vc-gradient-bottom"></div>
+    <div class="vc-grain"></div>
+    <div class="vc-letterbox-top"></div>
+    <div class="vc-letterbox-bottom"></div>
+    <div class="vc-scanline"></div>
+    <div class="vc-year-watermark">2026</div>
+    <div class="vc-content">
+      <div class="vc-left">
+        <div class="vc-eyebrow">
+          <div class="vc-eyebrow-line"></div>
+          <span class="vc-eyebrow-text">BMW · Collection 2026</span>
+        </div>
+        <h3 class="vc-title">
+          <strong>Vivez</strong>
+          <em>L'Expérience</em>
+        </h3>
+        <div class="vc-gold-line"></div>
+        <button class="vc-scroll-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+          <div class="vc-scroll-text">
+            <span>Prêt à franchir le pas ?</span>
+            <span>Obtenir Mon Offre →</span>
+          </div>
+          <div class="vc-scroll-icon">↓</div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- FORM -->
+<div class="form-wrapper" id="contact">
+  <div class="reveal">
+    <span class="form-label">Réservation · Offre Exclusive Client</span>
+    <h2 class="form-title">Votre Prochaine BMW Vous Attend</h2>
+  </div>
+
+  <!-- FORMULAIRE -->
+  <form class="form-grid reveal" id="mainForm" onsubmit="handleSubmit(event);">
+    <div class="form-field"><label>Prénom & Nom</label><input type="text" placeholder="Sami ELIDRISSI" value="Sami ELIDRISSI"></div>
+    <div class="form-field"><label>E-mail</label><input type="email" placeholder="sami.elidrissi@gmail.com" value="sami.elidrissi@gmail.com"></div>
+    <div class="form-field"><label>Téléphone</label><input type="tel" placeholder="+212645246362" value="+212645246362"></div>
+    <div class="form-field"><label>Ville</label><input type="text" placeholder="Casablanca" value="Casablanca"></div>
+    <div class="form-field">
+      <label>Modèle Souhaité</label>
+      <select id="modelSelect">
+        <option value="x3">BMW X3 — 30i xDrive M Sport · À partir de 430 000 DH</option>
+        <option value="x2">BMW X2 — M35i xDrive · À partir de 380 000 DH</option>
+        <option value="x7">BMW X7 — xDrive50i V8 · À partir de 1 200 000 DH</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Budget Envisagé</label>
+      <select>
+        <option>350 000 – 500 000 DH</option>
+        <option>500 000 – 800 000 DH</option>
+        <option>800 000 – 1 200 000 DH</option>
+        <option>1 200 000 DH et plus</option>
+      </select>
+    </div>
+    <div class="form-field span2"><label>Message (optionnel)</label><input type="text" placeholder="Précisez vos préférences de finition, couleur, options..."></div>
+    <div class="form-submit"><button class="submit-btn" type="submit">Recevoir Mon Offre Personnalisée &nbsp; →</button></div>
+  </form>
+
+  <!-- MESSAGE DE SUCCÈS -->
+  <div class="form-success" id="formSuccess">
+    <div class="fs-icon">✓</div>
+    <div class="fs-model" id="successModelLabel">BMW X3 · 30i xDrive M Sport</div>
+    <h3 class="fs-title">Demande envoyée avec succès</h3>
+    <div class="fs-divider"></div>
+    <p class="fs-text">
+      Merci pour votre intérêt pour BMW. Votre demande a été bien prise en charge.<br>
+      Un conseiller commercial vous contactera dans les plus brefs délais pour vous accompagner dans le choix de votre véhicule.
+    </p>
+    <div class="fs-commercial">
+      <div class="fs-commercial-avatar">👤</div>
+      <div class="fs-commercial-info">
+        <div class="fs-commercial-name">Votre Conseiller BMW Privilège</div>
+        <div class="fs-commercial-role">Programme Renouvellement · Clients Fidèles X1</div>
+      </div>
+    </div>
+    <div class="fs-eta">Délai de réponse estimé : 24 – 48h ouvrées</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <img src="BMW.svg" style="width:50px;opacity:0.5;" alt="BMW">
+  <p>BMW MAROC · AVANT-VENTE RENOUVELLEMENT · PROGRAMME CLIENTS FIDÈLES</p>
+  <p>© 2026 BMW Group</p>
+</footer>
+
+<script>
+// ========= DATA =========
+const models = {
+  x3: {
+    name: 'BMW X3',
+    subtitle: 'SAV Premium · 30i xDrive M Sport',
+    selectLabel: 'BMW X3 · 30i xDrive M Sport',
+    specs: {
+      moteur: '4 cylindres 2.0L TwinPower Turbo',
+      puissance: '292 ch à 5 000 tr/min',
+      couple: '400 Nm à 1 550 tr/min',
+      transmission: 'Automatique 8 rapports Steptronic',
+      propulsion: 'xDrive 4×4 intégrale intelligente',
+      acceleration: '5.6 s (0–100 km/h)',
+      vitesse_max: '240 km/h (limitée)',
+      consommation: '7.4 L/100 km (mixte)',
+      emissions: '168 g/km CO₂',
+      dimensions: '4 755 × 1 920 × 1 660 mm',
+      coffre: '570 L / 1 600 L (sièges rabattus)',
+      poids: '1 845 kg',
+      empattement: '2 864 mm',
+      prix_maroc: 'À partir de 430 000 DH TTC',
+    },
+    innovations: [
+      { title: 'BMW Curved Display', desc: '12.3" conducteur + 14.9" central · iDrive 8 nouvelle génération' },
+      { title: 'Panoramic Sky Lounge', desc: 'Toit vitré panoramique étendu avec éclairage ambiant intégré' },
+      { title: 'Parking Assistant Pro', desc: 'Manœuvre autonome télécommandée depuis l\'application BMW' },
+      { title: 'Active Cruise Control', desc: 'Régulateur adaptatif avec assistant voie et Stop & Go en ville' },
+      { title: 'Sièges M Sport chauffants', desc: 'Réglage électrique 14 positions · Mémoire conducteur · Ventilation' },
+      { title: 'Harman Kardon 12 HP', desc: 'Système audio surround 12 haut-parleurs 320 Watts premium' },
+    ],
+    photos: [
+      { url: 'photo-1555215695-3004980ad54e.jpg', caption: 'Maîtrise du Territoire', sub: 'BMW X3 · Vue frontale · Finition M Sport' },
+      { url: 'photo-1555215695-3004980ad54e.jpg', caption: 'Habitacle Raffiné', sub: 'Cuir Vernasca · BMW Curved Display' },
+      { url: 'photo-1555215695-3004980ad54e.jpg', caption: 'Silhouette Dynamique', sub: 'Profil M Sport · Jantes 20" bicolores' },
+      { url: 'photo-1555215695-3004980ad54e.jpg', caption: 'Proue BMW', sub: 'Double rein élargi · LED Adaptive Matrix' },
+      { url: 'photo-1555215695-3004980ad54e.jpg', caption: 'Arrière Sculptural', sub: 'Feux LED · Diffuseur M Sport noir' },
+      { url: 'photo-1555215695-3004980ad54e.jpg', caption: 'En Pleine Nature', sub: 'xDrive · Prêt pour toutes les routes' },
+    ],
+  },
+  x2: {
+    name: 'BMW X2',
+    subtitle: 'Coupé SAC · M35i xDrive',
+    selectLabel: 'BMW X2 · M35i xDrive',
+    specs: {
+      moteur: '4 cylindres 2.0L TwinPower Turbo + 48V MHT',
+      puissance: '313 ch à 5 500 tr/min',
+      couple: '400 Nm à 1 750 tr/min',
+      transmission: 'Automatique 7 rapports à double embrayage',
+      propulsion: 'xDrive 4×4 + Mild Hybrid 48V',
+      acceleration: '5.4 s (0–100 km/h)',
+      vitesse_max: '250 km/h (limitée)',
+      consommation: '7.0 L/100 km (mixte)',
+      emissions: '161 g/km CO₂',
+      dimensions: '4 554 × 1 845 × 1 560 mm',
+      coffre: '560 L / 1 400 L (sièges rabattus)',
+      poids: '1 730 kg',
+      empattement: '2 692 mm',
+      prix_maroc: 'À partir de 380 000 DH TTC',
+    },
+    innovations: [
+      { title: 'Mild Hybrid 48V', desc: 'Récupération d\'énergie au freinage · Boost en accélération · Start/Stop amélioré' },
+      { title: 'M Sport Exhaust actif', desc: 'Ligne d\'échappement M à valves actives · Sonorité signature réglable' },
+      { title: 'BMW Interaction Bar', desc: 'Barre lumineuse interactive 21 zones · Communication visuelle conducteur' },
+      { title: 'Head-Up Display AR', desc: 'Affichage tête haute réalité augmentée · Navigation sur chaussée' },
+      { title: 'Sièges M Baquets', desc: 'Baquets sport M intégraux · Maintien latéral renforcé · Cuir Dakota' },
+      { title: 'Caméra 360° Surround', desc: 'Vue aérienne 3D · 4 caméras HD · Assistance tous angles à l\'arrêt' },
+    ],
+    photos: [
+      { url: 'Image Email.png', caption: 'Audace et Style', sub: 'BMW X2 · Coupé SAC · Design avant-gardiste' },
+      { url: 'Image Email.png', caption: 'Cockpit M Sport', sub: 'Sièges baquets M · Interaction Bar lumineuse' },
+      { url: 'Image Email.png', caption: 'Calandre M', sub: 'Calandre élargie · Phares Laser BMW' },
+      { url: 'Image Email.png', caption: 'Profil Coupé', sub: 'Toiture plongeante · Lignes tendues M Sport' },
+      { url: 'Image Email.png', caption: 'Arrière Sport', sub: 'Diffuseur M · Double sortie · Feux 3D' },
+      { url: 'Image Email.png', caption: 'Urbain & Libre', sub: 'M35i xDrive · 313 ch de pur plaisir' },
+    ],
+  },
+  x7: {
+    name: 'BMW X7',
+    subtitle: 'SAV de Prestige · xDrive50i V8',
+    selectLabel: 'BMW X7 · xDrive50i V8',
+    specs: {
+      moteur: 'V8 4.4L TwinPower Turbo Biturbo',
+      puissance: '530 ch à 5 500 tr/min',
+      couple: '750 Nm à 1 800 tr/min',
+      transmission: 'Automatique 8 rapports Steptronic Sport',
+      propulsion: 'xDrive 4×4 intégrale permanente',
+      acceleration: '4.7 s (0–100 km/h)',
+      vitesse_max: '250 km/h (limitée) / 280 km/h option',
+      consommation: '11.2 L/100 km (mixte)',
+      emissions: '254 g/km CO₂',
+      dimensions: '5 151 × 2 000 × 1 835 mm',
+      coffre: '326 L / 2 120 L (7 sièges rabattus)',
+      poids: '2 510 kg',
+      empattement: '3 105 mm',
+      prix_maroc: 'À partir de 1 200 000 DH TTC',
+    },
+    innovations: [
+      { title: '7 Places Grand Luxe', desc: '3 rangées entièrement électriques · Cuir Nappa · Climatisation 4 zones' },
+      { title: 'Suspension Air Active', desc: 'Suspension pneumatique 2 axes · Réglage hauteur automatique · Anti-roulis' },
+      { title: 'Bowers & Wilkins 20 HP', desc: 'Système Diamond surround 20 haut-parleurs · 1 500 Watts cristal pur' },
+      { title: 'Sky Lounge Panoramique', desc: 'Toit ouvrant cristaux LCD 2m² · 15 ambiances lumineuses programmables' },
+      { title: 'Conduite Autonome Niv.2', desc: 'Steering Control Pro · Lane keeping · Autoroute semi-autonome 130 km/h' },
+      { title: 'Affichage Iconic Glow', desc: 'Calandre lumineuse illuminée · Signature lumineuse premium avant' },
+    ],
+    photos: [
+      { url: 'd86dde2b-eeac-4809-8ba0-546c91d32726.jpg', caption: 'Présence Absolue', sub: 'BMW X7 · Majesté sur la route' },
+      { url: 'd86dde2b-eeac-4809-8ba0-546c91d32726.jpg', caption: 'Lounge de Prestige', sub: '7 places grand luxe · Cuir Nappa Merino' },
+      { url: 'd86dde2b-eeac-4809-8ba0-546c91d32726.jpg', caption: 'Sky Lounge', sub: 'Toit panoramique 2m² · Cristaux LCD lumineux' },
+      { url: 'd86dde2b-eeac-4809-8ba0-546c91d32726.jpg', caption: 'V8 Biturbo', sub: '530 ch · 750 Nm · Puissance absolue' },
+      { url: 'd86dde2b-eeac-4809-8ba0-546c91d32726.jpg', caption: 'Nuit Premium', sub: 'Iconic Glow · Calandre lumineuse signature' },
+      { url: 'd86dde2b-eeac-4809-8ba0-546c91d32726.jpg', caption: 'Conquête Totale', sub: 'xDrive · Toutes surfaces · Tout terrain' },
+    ],
+  },
+};
+
+// ========= SCROLL TO MODEL =========
+function scrollToModel(key) {
+  const panel = document.getElementById('panel-' + key);
+  if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ========= GO TO FORM WITH MODEL PRE-SELECTED =========
+function goToForm(key) {
+  const select = document.getElementById('modelSelect');
+  if (select) select.value = key;
+  document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ========= HANDLE FORM SUBMIT =========
+function handleSubmit(e) {
+  e.preventDefault();
+  const key = document.getElementById('modelSelect').value;
+  const m = models[key];
+  document.getElementById('successModelLabel').textContent = m.selectLabel;
+  document.getElementById('mainForm').style.display = 'none';
+  const s = document.getElementById('formSuccess');
+  s.classList.add('visible');
+  setTimeout(() => s.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+}
+
+// ========= GALLERY =========
+let currentModel = null, currentIndex = 0, infoPanelOpen = false;
+
+function openGallery(key) {
+  currentModel = key;
+  currentIndex = 0;
+  infoPanelOpen = false;
+  document.getElementById('infoPanel').classList.remove('open');
+  document.getElementById('infoToggleBtn').textContent = 'Spécifications';
+  const m = models[key];
+  document.getElementById('gh-name').textContent = m.name;
+  document.getElementById('gip-title').textContent = m.name;
+  document.getElementById('gip-sub').textContent = m.subtitle;
+  document.getElementById('gip-features').innerHTML = m.innovations.map(f => `
+    <div class="gip-feature"><div class="gf-dot"></div><div class="gf-content"><h4>${f.title}</h4><p>${f.desc}</p></div></div>`).join('');
+  document.getElementById('gip-dl-btn').onclick = () => downloadFiche(key);
+  document.getElementById('gallery-imgs').innerHTML = m.photos.map((p, i) =>
+    `<img class="gm-img ${i===0?'active':''}" src="${p.url}" alt="${p.caption}" loading="${i===0?'eager':'lazy'}">`).join('');
+  document.getElementById('gallery-strip').innerHTML = m.photos.map((p, i) =>
+    `<div class="strip-thumb ${i===0?'active':''}" onclick="goTo(${i})"><img src="${p.url}" alt=""></div>`).join('');
+  updateCaption();
+  document.getElementById('galleryOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeGallery() { document.getElementById('galleryOverlay').classList.remove('open'); document.body.style.overflow = ''; }
+
+function galleryNav(dir) { goTo((currentIndex + dir + models[currentModel].photos.length) % models[currentModel].photos.length); }
+
+function goTo(idx) {
+  const imgs = document.querySelectorAll('.gm-img');
+  const thumbs = document.querySelectorAll('.strip-thumb');
+  imgs[currentIndex].classList.remove('active'); imgs[currentIndex].classList.add('exit');
+  setTimeout(() => imgs[currentIndex]?.classList.remove('exit'), 600);
+  currentIndex = idx;
+  imgs[currentIndex].classList.add('active');
+  thumbs.forEach((t, i) => t.classList.toggle('active', i === currentIndex));
+  thumbs[currentIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  updateCaption();
+}
+
+function updateCaption() {
+  const p = models[currentModel].photos[currentIndex];
+  document.getElementById('gc-title').textContent = p.caption;
+  document.getElementById('gc-sub').textContent = p.sub;
+  document.getElementById('gh-counter').textContent = `${currentIndex + 1} / ${models[currentModel].photos.length}`;
+}
+
+function toggleInfo() {
+  infoPanelOpen = !infoPanelOpen;
+  document.getElementById('infoPanel').classList.toggle('open', infoPanelOpen);
+  document.getElementById('infoToggleBtn').textContent = infoPanelOpen ? 'Fermer' : 'Spécifications';
+}
+
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('galleryOverlay').classList.contains('open')) return;
+  if (e.key === 'ArrowRight') galleryNav(1);
+  if (e.key === 'ArrowLeft') galleryNav(-1);
+  if (e.key === 'Escape') closeGallery();
+});
+
+// ========= PDF =========
+function downloadFiche(key) {
+  const { jsPDF } = window.jspdf;
+  const m = models[key];
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const W = 210, H = 297;
+  const isX7 = key === 'x7';
+  doc.setFillColor(5, 5, 5); doc.rect(0, 0, W, H, 'F');
+  doc.setFillColor(0, 102, 177); doc.rect(0, 0, W, 2.5, 'F');
+  doc.setFillColor(0, 102, 177); doc.rect(0, 0, 3, H, 'F');
+  if (isX7) { doc.setFillColor(201, 168, 76); doc.rect(0, H - 2.5, W, 2.5, 'F'); }
+  doc.setFillColor(20, 25, 35); doc.circle(24, 24, 11, 'F');
+  doc.setFillColor(0, 102, 177); doc.circle(24, 24, 8.5, 'F');
+  doc.setFillColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(5.5); doc.text('BMW', 24, 25.5, { align: 'center' });
+  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(24); doc.text(m.name.toUpperCase(), 40, 20);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(0, 102, 177); doc.text('FICHE TECHNIQUE EXCLUSIVE · BMW MAROC', 40, 28);
+  doc.setTextColor(150, 160, 175); doc.setFontSize(7); doc.text(m.subtitle, 40, 35);
+  doc.setDrawColor(0, 102, 177); doc.setLineWidth(0.5); doc.line(14, 42, W - 14, 42);
+  let y = 52;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(0, 102, 177); doc.text('SPÉCIFICATIONS TECHNIQUES', 14, y); y += 6;
+  const labels = { moteur:'Moteur', puissance:'Puissance', couple:'Couple max', transmission:'Transmission', propulsion:'Propulsion', acceleration:'Accélération', vitesse_max:'Vitesse max', consommation:'Consommation', emissions:'Émissions CO₂', dimensions:'Dimensions', coffre:'Coffre', poids:'Poids', empattement:'Empattement', prix_maroc:'Prix Maroc' };
+  Object.entries(m.specs).forEach(([k, v], i) => {
+    const ry = y + i * 8.8;
+    if (i % 2 === 0) { doc.setFillColor(14, 18, 28); doc.rect(14, ry - 3.5, W - 28, 8.8, 'F'); }
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(130, 145, 165); doc.text((labels[k] || k).toUpperCase(), 18, ry + 1.5);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(255, 255, 255); doc.text(v, 90, ry + 1.5);
+  });
+  y += Object.keys(m.specs).length * 8.8 + 8;
+  doc.setTextColor(isX7 ? 201 : 0, isX7 ? 168 : 102, isX7 ? 76 : 177); doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.text('TECHNOLOGIES & INNOVATIONS', 14, y); y += 7;
+  m.innovations.forEach(innov => {
+    doc.setFillColor(0, 102, 177); doc.circle(17, y - 1, 1.4, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(255, 255, 255); doc.text(innov.title, 22, y);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.2); doc.setTextColor(130, 145, 165); doc.text(doc.splitTextToSize(innov.desc, W - 45), 22, y + 4.5); y += 13;
+  });
+  doc.setFillColor(0, 102, 177); doc.rect(0, H - 18, W, 18, 'F');
+  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.text('BMW MAROC · PROGRAMME RENOUVELLEMENT · CLIENTS FIDÈLES X1', W / 2, H - 11, { align: 'center' });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(5.5); doc.setTextColor(180, 210, 235); doc.text('Document réservé aux clients Privilège · Confidentiel · © 2026 BMW Group Maroc', W / 2, H - 5, { align: 'center' });
+  doc.save(`BMW_${m.name.replace(/\s/g,'_')}_FicheTechnique_2026.pdf`);
+  const toast = document.getElementById('dlToast');
+  toast.textContent = `⬇ ${m.name} · Fiche technique téléchargée`;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// ========= CURSOR =========
+const cursor = document.getElementById('cursor'), ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx-6+'px'; cursor.style.top = my-6+'px'; });
+(function animRing() { rx += (mx-rx-20)*.12; ry += (my-ry-20)*.12; ring.style.left = rx+'px'; ring.style.top = ry+'px'; requestAnimationFrame(animRing); })();
+
+// ========= SCROLL REVEAL =========
+const obs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// ========= PARALLAX =========
+window.addEventListener('scroll', () => {
+  document.querySelectorAll('.model-bg').forEach(bg => {
+    const rect = bg.parentElement.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0)
+      bg.style.transform = `translateY(${rect.top * 0.1}px) scale(1.1)`;
+  });
+});
+</script>
+</body>
+</html>
