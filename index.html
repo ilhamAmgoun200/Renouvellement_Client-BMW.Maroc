@@ -885,7 +885,11 @@ footer p { font-size: 0.55rem; letter-spacing: 3px; color: var(--text-dim); }
         <div class="spec-item"><div class="spec-val">xDrive</div><div class="spec-key">4×4 intelligent</div></div>
       </div>
       <div class="model-actions">
-        <button class="model-cta" onclick="goToForm('x3')">Je suis intéressé <span style="font-size:1rem;">→</span></button>
+        <button class="dl-btn" onclick="goToForm('x3')"
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+          <span>Je suis intéressé</span>
+          <span class="dl-pulse"></span>
+        </button>        
         <button class="gallery-open-btn" onclick="openGallery('x3')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3v18h18V3zm-2 2v14H5V5h14zM8 8H6V6h2v2zm4 0h-2V6h2v2zm4 0h-2V6h2v2zm-8 4H6v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>
           <span>Galerie · 6 photos</span>
@@ -895,6 +899,7 @@ footer p { font-size: 0.55rem; letter-spacing: 3px; color: var(--text-dim); }
           <span>Fiche Technique · BMW X3</span>
           <span class="dl-pulse"></span>
         </button>
+        
       </div>
     </div>
   </div>
@@ -925,7 +930,11 @@ footer p { font-size: 0.55rem; letter-spacing: 3px; color: var(--text-dim); }
         <div class="spec-item" style="text-align:right;"><div class="spec-val">Coupé<span class="spec-unit"> SAC</span></div><div class="spec-key">Style unique</div></div>
       </div>
       <div class="model-actions">
-        <button class="model-cta" style="justify-content:flex-end;" onclick="goToForm('x2')">Je suis intéressé <span style="font-size:1rem;">→</span></button>
+        <button class="dl-btn" onclick="goToForm('x2')"
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+          <span>Je suis intéressé</span>
+          <span class="dl-pulse"></span>
+        </button>  
         <button class="gallery-open-btn" onclick="openGallery('x2')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3v18h18V3zm-2 2v14H5V5h14zM8 8H6V6h2v2zm4 0h-2V6h2v2zm4 0h-2V6h2v2zm-8 4H6v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>
           <span>Galerie · 6 photos</span>
@@ -965,7 +974,12 @@ footer p { font-size: 0.55rem; letter-spacing: 3px; color: var(--text-dim); }
         <div class="spec-item"><div class="spec-val">7<span class="spec-unit"> pl.</span></div><div class="spec-key">Confort total</div></div>
       </div>
       <div class="model-actions">
-        <button class="model-cta" onclick="goToForm('x7')">Je suis intéressé <span style="font-size:1rem;">→</span></button>
+
+        <button class="dl-btn" onclick="goToForm('x7')"
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+          <span>Je suis intéressé</span>
+          <span class="dl-pulse"></span>
+        </button>  
         <button class="gallery-open-btn" onclick="openGallery('x7')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3v18h18V3zm-2 2v14H5V5h14zM8 8H6V6h2v2zm4 0h-2V6h2v2zm4 0h-2V6h2v2zm-8 4H6v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>
           <span>Galerie · 6 photos</span>
@@ -1048,9 +1062,9 @@ footer p { font-size: 0.55rem; letter-spacing: 3px; color: var(--text-dim); }
     <div class="form-field">
       <label>Modèle Souhaité</label>
       <select id="modelSelect">
-        <option value="x3">BMW X3 — 30i xDrive M Sport · À partir de 430 000 DH</option>
-        <option value="x2">BMW X2 — M35i xDrive · À partir de 380 000 DH</option>
-        <option value="x7">BMW X7 — xDrive50i V8 · À partir de 1 200 000 DH</option>
+        <option value="x3">BMW X3</option>
+        <option value="x2">BMW X2</option>
+        <option value="x7">BMW X7</option>
       </select>
     </div>
     <div class="form-field">
